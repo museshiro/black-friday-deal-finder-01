@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DealBeacon — Black Friday Deal Finder 2026</title>
+<meta name="description" content="32 real, checked Black Friday and Cyber Monday deals with sale price, usual price, discount and an honest is-it-really-a-deal verdict.">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">Black Friday · 27–30 Nov 2026</p>
+    <h1>DealBeacon</h1>
+    <p class="tagline">Real deals, checked today — with an honest verdict on each one.</p>
+    <p class="method">Every price on this page was read at the store or in a deals source that names the store, on <strong>27 Nov 2026, 14:11 WIB</strong>. Prices can move or sell out — always check the store page before you buy. Discounts are computed from the two prices shown.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="controls" aria-label="Search and filters">
+    <label class="field search-field">Search
+      <input id="q" type="search" placeholder="Try “airpods”, “TV”, “vacuum”…" autocomplete="off">
+    </label>
+    <label class="field">Category
+      <select id="cat"></select>
+    </label>
+    <label class="field">Store
+      <select id="store"></select>
+    </label>
+    <label class="field">Min. discount
+      <select id="min">
+        <option value="0">Any discount</option>
+        <option value="30">30% or more</option>
+        <option value="50">50% or more</option>
+      </select>
+    </label>
+    <label class="field">Sort by
+      <select id="sort">
+        <option value="pct">Biggest discount %</option>
+        <option value="save">Biggest saving $</option>
+        <option value="low">Lowest price</option>
+        <option value="high">Highest price</option>
+      </select>
+    </label>
+    <button id="reset" type="button">Clear filters</button>
+  </section>
+
+  <p id="count" class="count" aria-live="polite"></p>
+  <p id="stats-best" class="best"></p>
+
+  <section id="grid" class="grid" aria-label="Deals"></section>
+
+  <section class="how">
+    <h2>How to read a verdict</h2>
+    <ul>
+      <li><strong>New low</strong> — the lowest price we have seen for this product.</li>
+      <li><strong>Strong price</strong> — genuinely good value, well under the usual price.</li>
+      <li><strong>Routine sale</strong> — a real cut, but a modest one; not a record.</li>
+      <li><strong>Rare cut</strong> — a small discount on a product that almost never goes on sale.</li>
+    </ul>
+    <p>“Usual price” is the store's list price the deal was checked against. A deal is only listed here if a store page or a named deals source showed that price when we checked it.</p>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p>DealBeacon is an independent deal finder built for Black Friday 2026. It is not affiliated with Amazon, Best Buy, Walmart or Target. Product links go to the store that sells the product.</p>
+</footer>
+</body>
+</html>
