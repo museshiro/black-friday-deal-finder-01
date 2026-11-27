@@ -1,47 +1,72 @@
-// DealBeacon entry program (Node 22, standard library only).
+// DealBeacon — Black Friday deal finder entry bot.
 //
-// It hands the static site in: copies this repository's app/ and
-// screenshots/ into the output directory and writes dossier.json there,
-// the summary the entry system reads, using the vendored library.
-//
-// The grader runs this program twice in a read-only working directory, so
-// every write goes to the output directory (or MAKEFUN_OUTPUT_DIR outside
-// the grader); nothing is written next to this file.
-//
-//   MAKEFUN_OUTPUT_DIR=out node main.ts
+// Copies the static app (app/) and its screenshots (screenshots/) from
+// beside this file into the output directory, then builds the entry
+// dossier with the kit library and writes it to <output>/dossier.json.
+// Node 22 standard library only. No network, no timers, no child
+// processes, no async work. Every write goes to the output directory.
 
-import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
-import { buildDossier } from "./vendor/makefun-frontend.ts";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { buildDossier } from './vendor/makefun-frontend.ts';
 
-const repoRoot = fileURLToPath(new URL(".", import.meta.url));
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
-
-// The output directory is the only writable place the grader guarantees.
-mkdirSync(outDir, { recursive: true });
-
-// Copy the whole static site, then the screenshots, exactly as shipped.
-cpSync(join(repoRoot, "app"), join(outDir, "app"), { recursive: true });
-
-const shotsDir = join(repoRoot, "screenshots");
-mkdirSync(join(outDir, "screenshots"), { recursive: true });
-if (existsSync(shotsDir)) {
-  cpSync(shotsDir, join(outDir, "screenshots"), { recursive: true });
-}
-
-// Refuse to hand in a site with no screenshots: the gate needs 3 or 4.
-const shots = readdirSync(join(outDir, "screenshots")).filter((n) => !n.startsWith("."));
-if (shots.length < 3 || shots.length > 4) {
-  throw new Error(`expected 3 or 4 screenshots, found ${shots.length}`);
-}
-
-// buildDossier re-reads app/ and screenshots/ from the output directory and
-// writes the dossier the entry system compares byte for byte with its own copy.
-const dossier = buildDossier(outDir, {
+const CAPS = {
   text_max_bytes: 163840,
   screenshots: { max: 4, max_bytes: 262144 },
   app_max_files: 993,
   app_max_bytes: 16777216,
-});
-writeFileSync(join(outDir, "dossier.json"), dossier);
+};
+
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+const here = fileURLToPath(new URL('.', import.meta.url));
+
+// Recursively copy src into dest, replacing dest first so a stale output
+// directory can never leak old files into the dossier. Entries are
+// visited in code-unit order so the copy is deterministic.
+function copyDir(src: string, dest: string): void {
+  rmSync(dest, { recursive: true, force: true });
+  mkdirSync(dest, { recursive: true });
+  for (const name of readdirSync(src).sort()) {
+    const from = join(src, name);
+    const to = join(dest, name);
+    if (statSync(from).isDirectory()) copyDir(from, to);
+    else cpSync(from, to);
+  }
+}
+
+function countScreenshots(dir: string): number {
+  return readdirSync(dir)
+    .filter((name) => /\.(jpe?g|png)$/i.test(name))
+    .filter((name) => statSync(join(dir, name)).isFile()).length;
+}
+
+const appSrc = join(here, 'app');
+const shotsSrc = join(here, 'screenshots');
+if (!existsSync(appSrc) || !statSync(appSrc).isDirectory()) {
+  throw new Error(`main: no app/ directory beside main.ts (${appSrc})`);
+}
+if (!existsSync(shotsSrc) || !statSync(shotsSrc).isDirectory()) {
+  throw new Error(`main: no screenshots/ directory beside main.ts (${shotsSrc})`);
+}
+
+mkdirSync(outDir, { recursive: true });
+copyDir(appSrc, join(outDir, 'app'));
+copyDir(shotsSrc, join(outDir, 'screenshots'));
+
+const shots = countScreenshots(join(outDir, 'screenshots'));
+if (shots < 3 || shots > 4) {
+  throw new Error(`main: expected 3-4 screenshots in output, found ${shots}`);
+}
+
+const dossier = buildDossier(outDir, CAPS);
+writeFileSync(join(outDir, 'dossier.json'), dossier);
+// Success: app/, screenshots/ and dossier.json are all in the output dir.
