@@ -1,71 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DealBeacon — Black Friday Deal Finder 2026</title>
-<meta name="description" content="32 real, checked Black Friday and Cyber Monday deals with sale price, usual price, discount and an honest is-it-really-a-deal verdict.">
+<title>Cutline — Black Friday price desk</title>
 <link rel="stylesheet" href="style.css">
-<script type="module" src="app.js"></script>
 </head>
 <body>
-<header class="mast">
-  <div class="wrap">
-    <p class="eyebrow">Black Friday · 27–30 Nov 2026</p>
-    <h1>DealBeacon</h1>
-    <p class="tagline">Real deals, checked today — with an honest verdict on each one.</p>
-    <p class="method">Every price on this page was read at the store or in a deals source that names the store, on <strong>27 Nov 2026, 14:11 WIB</strong>. Prices can move or sell out — always check the store page before you buy. Discounts are computed from the two prices shown.</p>
+<header class="head">
+  <div class="wrap head-in">
+    <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="brand">Cutline</span>
+    <span class="tagline">Black Friday price desk — verified 28 Nov 2026.</span>
+    <span class="head-right"><span><b id="headCount">60 deals</b> · 4 stores</span><span class="ends">Sale ends Mon 30 Nov</span></span>
   </div>
 </header>
+<div class="stats"><div class="wrap stats-in" id="stats"></div></div>
 
-<main class="wrap">
-  <section class="controls" aria-label="Search and filters">
-    <label class="field search-field">Search
-      <input id="q" type="search" placeholder="Try “airpods”, “TV”, “vacuum”…" autocomplete="off">
-    </label>
-    <label class="field">Category
-      <select id="cat"></select>
-    </label>
-    <label class="field">Store
-      <select id="store"></select>
-    </label>
-    <label class="field">Min. discount
-      <select id="min">
-        <option value="0">Any discount</option>
-        <option value="30">30% or more</option>
-        <option value="50">50% or more</option>
-      </select>
-    </label>
-    <label class="field">Sort by
-      <select id="sort">
-        <option value="pct">Biggest discount %</option>
-        <option value="save">Biggest saving $</option>
-        <option value="low">Lowest price</option>
-        <option value="high">Highest price</option>
-      </select>
-    </label>
-    <button id="reset" type="button">Clear filters</button>
-  </section>
+<section class="hero" id="hero" aria-label="Deal of the day">
+  <div class="wrap hero-in">
+    <div class="hero-main">
+      <div class="eyebrow">DEAL OF THE DAY</div>
+      <div class="hero-name" id="heroName"></div>
+      <div class="hero-chips" id="heroChips"></div>
+    </div>
+    <div class="hero-price">
+      <div><span class="hero-sale" id="heroSale"></span><span class="hero-badge" id="heroPct"></span></div>
+      <div class="hero-usual"><s id="heroUsual"></s><span class="hero-save" id="heroSave"></span></div>
+      <a class="hero-cta" id="heroCta" href="#" target="_blank" rel="noopener">See deal ↗</a>
+    </div>
+  </div>
+</section>
+<div class="hero-chip" id="heroChip">
+  <div class="wrap hero-chip-in"><span class="lbl">DEAL OF THE DAY</span><a id="chipLink" href="#" target="_blank" rel="noopener"></a><span class="pct" id="chipPct"></span><span id="chipPrice"></span></div>
+</div>
 
-  <p id="count" class="count" aria-live="polite"></p>
-  <p id="stats-best" class="best"></p>
+<div class="filters wrap">
+  <div class="pills" id="pills" role="group" aria-label="Category"></div>
+  <div class="controls">
+    <div class="seg" id="verdictSeg" role="group" aria-label="Verdict"></div>
+    <label class="search" id="searchBox"><input id="q" type="search" placeholder="Search deals…" autocomplete="off" aria-label="Search deals"><button class="x" id="clearQ" type="button" aria-label="Clear search">✕</button></label>
+    <select id="store" aria-label="Store"></select>
+    <select id="minOff" aria-label="Minimum discount">
+      <option value="0">Any discount</option>
+      <option value="30">30% off or more</option>
+      <option value="50">50% off or more</option>
+      <option value="60">60% off or more</option>
+    </select>
+    <select id="maxPrice" aria-label="Maximum price">
+      <option value="0">Any price</option>
+      <option value="100">Under $100</option>
+      <option value="250">Under $250</option>
+      <option value="500">Under $500</option>
+    </select>
+    <button class="toggle" id="realOnly" type="button" aria-pressed="false">Real deals only</button>
+    <select id="sort" aria-label="Sort">
+      <option value="pct">Biggest % off</option>
+      <option value="saved">Biggest $ saved</option>
+      <option value="low">Price low → high</option>
+      <option value="high">Price high → low</option>
+    </select>
+    <button class="clear" id="clearAll" type="button">Clear ✕</button>
+  </div>
+  <p class="result" id="resultLine"></p>
+</div>
 
-  <section id="grid" class="grid" aria-label="Deals"></section>
+<main class="wrap"><div class="grid" id="grid"></div></main>
 
-  <section class="how">
-    <h2>How to read a verdict</h2>
-    <ul>
-      <li><strong>New low</strong> — the lowest price we have seen for this product.</li>
-      <li><strong>Strong price</strong> — genuinely good value, well under the usual price.</li>
-      <li><strong>Routine sale</strong> — a real cut, but a modest one; not a record.</li>
-      <li><strong>Rare cut</strong> — a small discount on a product that almost never goes on sale.</li>
-    </ul>
-    <p>“Usual price” is the store's list price the deal was checked against. A deal is only listed here if a store page or a named deals source showed that price when we checked it.</p>
-  </section>
-</main>
-
-<footer class="wrap">
-  <p>DealBeacon is an independent deal finder built for Black Friday 2026. It is not affiliated with Amazon, Best Buy, Walmart or Target. Product links go to the store that sells the product.</p>
+<footer class="wrap footbar">
+  <div class="legend" id="legend"></div>
+  <p>Every price was checked at the store or in the source named on its card, 28 Nov 2026. Prices can move; the store page is the final word.</p>
+  <button class="copy" id="copyLink" type="button">Copy link to this view</button>
 </footer>
+
+<template id="cardTpl">
+  <a class="card" target="_blank" rel="noopener">
+    <span class="meta"><span class="sc"></span><span class="verdict"></span></span>
+    <span class="cname"></span>
+    <span class="price"><span class="sale"></span><span class="pct"></span></span>
+    <span class="compare"><s></s><span class="save"></span></span>
+    <span class="note"></span>
+    <span class="also"></span>
+    <span class="foot"><span class="src"></span><span class="view">View deal ↗</span></span>
+  </a>
+</template>
+
+<script src="deals.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
