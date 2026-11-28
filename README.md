@@ -1,32 +1,46 @@
-[![black-friday-deal-finder-01](https://make.fun/badge/black-friday-deal-finder-01.svg)](https://make.fun/bounty/black-friday-deal-finder-01)
-[![rank](https://make.fun/badge/black-friday-deal-finder-01/museshiro/black-friday-deal-finder-01/rank.svg)](https://make.fun/bounty/black-friday-deal-finder-01)
-[![reward](https://make.fun/badge/black-friday-deal-finder-01/museshiro/black-friday-deal-finder-01/reward.svg)](https://make.fun/bounty/black-friday-deal-finder-01)
+# Cutline — Black Friday price desk
 
-# DealBeacon — Black Friday Deal Finder
+[![Competition](https://make.fun/badge/black-friday-deal-finder-01.svg)](https://make.fun/bounty/black-friday-deal-finder-01)
+[![Rank](https://make.fun/badge/black-friday-deal-finder-01/museshiro/black-friday-deal-finder-01/rank.svg)](https://make.fun/bounty/black-friday-deal-finder-01)
+[![Reward](https://make.fun/badge/black-friday-deal-finder-01/museshiro/black-friday-deal-finder-01/reward.svg)](https://make.fun/bounty/black-friday-deal-finder-01)
 
-Entry for [Build the best real Black Friday deal finder](https://make.fun/bounty/black-friday-deal-finder-01): a static site listing 32 real, checked Black Friday / Cyber Monday 2026 deals — each with product, store, store link, sale price, usual price, discount, check time and source, plus an honest "is it really a deal" verdict (new low / strong price / routine sale / rare cut).
+Entry for [Build the best real Black Friday deal finder](https://make.fun/bounty/black-friday-deal-finder-01) on make.fun.
 
-Every price was read on 27 Nov 2026, 14:11 WIB at the store or in a deals source that names the store. A few products are also compared across stores (e.g. AirPods Pro 3 at Amazon, Walmart and Best Buy).
-
-## Features
-
-- Text search, filter by category, store and minimum discount (≥30% / ≥50%)
-- Sort by biggest discount %, biggest saving $, lowest or highest price
-- Deal cards show sale vs usual price, % off, amount saved, verdict + evidence, check time and source
-- Works on desktop and phone; vanilla JS + CSS, no build step, no network requests
+Cutline is a static Black Friday deal finder: 60 deals checked 28 Nov 2026 at
+Amazon, Best Buy, Walmart and Target, each with its sale price, usual price,
+discount, an honest verdict (new low / strong / rare cut / routine), one line
+of evidence, and the source that named the price. A deal of the day leads the
+page, a computed stats strip sums the list, and category pills, a verdict
+filter, search, store, discount and max-price filters, a real-deals-only
+toggle, and sorting narrow the grid. The
+page state lives in the URL, so any filtered view can be shared.
 
 ## Run it
 
-Serve `app/` with any static server, e.g. `python3 -m http.server -d app 8080`, then open http://localhost:8080.
-
-Build the entry output:
-
 ```sh
-MAKEFUN_OUTPUT_DIR=out node main.ts
+# Serve app/ from any static server, then open http://localhost:8080
+python3 -m http.server 8080 --directory app
 ```
 
-`main.ts` (Node 22, standard library only) copies `app/` and `screenshots/` to the output directory and writes `dossier.json` with the vendored `buildDossier` library. It is deterministic: two runs write identical bytes.
+No build step, no framework, no network requests: system fonts only, no
+images, and the deals live in `app/deals.js`.
 
-## License
+## Hand in
 
-MIT — see [LICENSE](LICENSE).
+```sh
+mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+```
+
+`main.ts` (Node 22, standard library only) copies `app/` and `screenshots/`
+into the output directory and writes `dossier.json` with `buildDossier` from
+`vendor/makefun-frontend.ts`. Two runs write byte-identical output.
+
+## Layout
+
+- `app/index.html` — page shell: header, stats strip, hero, filters, grid
+- `app/style.css` — the whole design (4-column grid on desktop, 2 on phones)
+- `app/deals.js` — the 60 checked deals and their verdicts
+- `app/app.js` — URL state, filtering, sorting, rendering, computed stats
+- `main.ts` — the hand-in program
+- `vendor/makefun-frontend.ts` — the kit's dossier library, copied unchanged
+- `screenshots/` — four real renders of this site
